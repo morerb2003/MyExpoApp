@@ -34,7 +34,7 @@ export function ThemedText({
 }
 
 const styles = StyleSheet.create({
-  default: { fontSize: 16, lineHeight: 24 },
+  default: { fontFamily: Fonts?.sans, fontSize: 16, lineHeight: 24 },
   title: {
     fontFamily: Fonts?.rounded,
     fontSize: 32,
@@ -42,8 +42,13 @@ const styles = StyleSheet.create({
     lineHeight: 38,
   },
   subtitle: { fontSize: 24, fontWeight: "600", lineHeight: 30 },
-  small: { fontSize: 13, lineHeight: 18 },
-  smallBold: { fontSize: 13, fontWeight: "700", lineHeight: 18 },
+  small: { fontFamily: Fonts?.sans, fontSize: 13, lineHeight: 18 },
+  smallBold: {
+    fontFamily: Fonts?.sans,
+    fontSize: 13,
+    fontWeight: "700",
+    lineHeight: 18,
+  },
   code: { fontFamily: Fonts?.mono, fontSize: 13 },
   link: { color: "#208AEF", fontWeight: "600" },
   linkPrimary: { color: "#208AEF", fontWeight: "600" },

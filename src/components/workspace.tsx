@@ -5,10 +5,12 @@ import {
     StyleSheet,
     View,
     ViewStyle,
+    useWindowDimensions,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Colors, Spacing } from "@/constants/theme";
+import { useColorScheme } from "@/hooks/use-color-scheme";
 import { ThemedText } from "./themed-text";
 import { ThemedView } from "./themed-view";
 
@@ -37,6 +39,8 @@ export function Workspace({
   description,
   children,
 }: WorkspaceProps) {
+  const { width } = useWindowDimensions();
+  const isCompact = width < 600;
   return (
     <ThemedView style={styles.screen}>
       <SafeAreaView style={styles.safeArea}>
@@ -44,13 +48,15 @@ export function Workspace({
           contentContainerStyle={styles.content}
           showsVerticalScrollIndicator={false}
         >
-          <View style={styles.topBar}>
+          <View style={[styles.topBar, isCompact && styles.topBarCompact]}>
             <View style={styles.brandMark}>
               <ThemedText style={styles.brandLetter}>W</ThemedText>
             </View>
-            <ThemedText type="small" themeColor="textSecondary">
-              MONDAY, SEPTEMBER 8
-            </ThemedText>
+            {!isCompact && (
+              <ThemedText type="small" themeColor="textSecondary">
+                MONDAY, SEPTEMBER 8
+              </ThemedText>
+            )}
             <View style={styles.avatar}>
               <ThemedText style={styles.avatarText}>AR</ThemedText>
             </View>
@@ -59,7 +65,10 @@ export function Workspace({
             <ThemedText type="code" style={styles.eyebrow}>
               {eyebrow}
             </ThemedText>
-            <ThemedText type="title" style={styles.title}>
+            <ThemedText
+              type="title"
+              style={[styles.title, isCompact && styles.titleCompact]}
+            >
               {title}
             </ThemedText>
             {description && (
@@ -99,7 +108,14 @@ export function Panel({
   children: ReactNode;
   style?: ViewStyle;
 }) {
-  return <View style={[styles.panel, style]}>{children}</View>;
+  const scheme = useColorScheme() === "dark" ? "dark" : "light";
+  return (
+    <View
+      style={[styles.panel, { backgroundColor: Colors[scheme].panel }, style]}
+    >
+      {children}
+    </View>
+  );
 }
 
 export function StatCard({ label, value, tone = "coral" }: StatCardProps) {
@@ -130,6 +146,7 @@ const styles = StyleSheet.create({
     gap: Spacing.five,
   },
   topBar: { flexDirection: "row", alignItems: "center", gap: Spacing.three },
+  topBarCompact: { gap: Spacing.two },
   brandMark: {
     width: 38,
     height: 38,
@@ -152,6 +169,7 @@ const styles = StyleSheet.create({
   heading: { gap: Spacing.two },
   eyebrow: { color: "#D7614B", letterSpacing: 1.2 },
   title: { fontSize: 38, lineHeight: 44 },
+  titleCompact: { fontSize: 32, lineHeight: 38 },
   description: { maxWidth: 560, lineHeight: 23 },
   sectionHeader: {
     flexDirection: "row",
@@ -162,7 +180,6 @@ const styles = StyleSheet.create({
   sectionTitle: { fontSize: 20, lineHeight: 26 },
   action: { color: "#D7614B" },
   panel: {
-    backgroundColor: Colors.light.panel,
     borderRadius: 18,
     padding: Spacing.three,
     gap: Spacing.three,

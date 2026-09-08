@@ -1,4 +1,11 @@
-import { Pressable, StyleSheet, View } from "react-native";
+import { useMemo, useState } from "react";
+import {
+    Pressable,
+    StyleSheet,
+    TextInput,
+    useWindowDimensions,
+    View,
+} from "react-native";
 
 import { ThemedText } from "@/components/themed-text";
 import { Panel, SectionHeader, Workspace } from "@/components/workspace";
@@ -25,6 +32,16 @@ const notes = [
 ];
 
 export default function NotesScreen() {
+  const [query, setQuery] = useState("");
+  const { width } = useWindowDimensions();
+  const columns = width < 520 ? 1 : width < 760 ? 2 : 3;
+  const visibleNotes = useMemo(
+    () =>
+      notes.filter(([title, preview]) =>
+        `${title} ${preview}`.toLowerCase().includes(query.toLowerCase()),
+      ),
+    [query],
+  );
   return (
     <Workspace
       eyebrow="NOTES / YOUR LIBRARY"
@@ -32,7 +49,14 @@ export default function NotesScreen() {
       description="A lightweight home for thinking, collecting, and coming back later."
     >
       <View style={styles.search}>
-        <ThemedText themeColor="textSecondary">⌕ Search your notes</ThemedText>
+        <TextInput
+          value={query}
+          onChangeText={setQuery}
+          placeholder="Search your notes"
+          placeholderTextColor="#756F67"
+          style={styles.searchInput}
+          accessibilityLabel="Search your notes"
+        />
         <ThemedText type="smallBold" style={styles.shortcut}>
           ⌘ K
         </ThemedText>
@@ -40,10 +64,16 @@ export default function NotesScreen() {
       <View>
         <SectionHeader title="Recent notes" action="+ New note" />
         <View style={styles.grid}>
-          {notes.map(([title, preview, date, color]) => (
+          {visibleNotes.map(([title, preview, date, color]) => (
             <Pressable
               key={title}
-              style={[styles.note, { backgroundColor: color }]}
+              style={[
+                styles.note,
+                {
+                  backgroundColor: color,
+                  width: columns === 1 ? "100%" : columns === 2 ? "48%" : "31%",
+                },
+              ]}
             >
               <ThemedText type="smallBold" themeColor="textSecondary">
                 {date.toUpperCase()}
@@ -53,6 +83,11 @@ export default function NotesScreen() {
               <ThemedText type="smallBold">OPEN NOTE ↗</ThemedText>
             </Pressable>
           ))}
+          {visibleNotes.length === 0 && (
+            <ThemedText themeColor="textSecondary">
+              No notes match “{query}”.
+            </ThemedText>
+          )}
         </View>
       </View>
       <View>
@@ -85,6 +120,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 14,
   },
+  searchInput: { flex: 1, color: "#272522", fontSize: 16, padding: 0 },
   shortcut: {
     backgroundColor: "#E1D9CE",
     borderRadius: 6,
@@ -93,8 +129,6 @@ const styles = StyleSheet.create({
   },
   grid: { flexDirection: "row", flexWrap: "wrap", gap: 12 },
   note: {
-    width: "31%",
-    minWidth: 160,
     minHeight: 175,
     borderRadius: 16,
     padding: 16,
