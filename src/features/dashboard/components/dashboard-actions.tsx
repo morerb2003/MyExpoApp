@@ -1,7 +1,6 @@
 import { Pressable, StyleSheet, TextInput, View } from "react-native";
 
-import { ThemedText } from "@/components/themed-text";
-import { Panel } from "@/components/workspace";
+import { Panel, ThemedText } from "@/components";
 
 type DashboardActionsProps = {
   isAdding: boolean;

@@ -1,16 +1,18 @@
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
-import { ThemedText } from "@/components/themed-text";
 import {
     Panel,
     SectionHeader,
     StatCard,
+    ThemedText,
     Workspace,
-} from "@/components/workspace";
-import { DashboardActions } from "@/features/dashboard/components/dashboard-actions";
-import { DashboardTaskList } from "@/features/dashboard/components/dashboard-task-list";
-import { useDashboard } from "@/features/dashboard/hooks/use-dashboard";
+} from "@/components";
+import {
+    DashboardActions,
+    DashboardTaskList,
+    useDashboard,
+} from "@/features/dashboard";
 
 export default function HomeScreen() {
   const dashboard = useDashboard();

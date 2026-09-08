@@ -7,8 +7,7 @@ import {
     View,
 } from "react-native";
 
-import { ThemedText } from "@/components/themed-text";
-import { Panel, SectionHeader, Workspace } from "@/components/workspace";
+import { Panel, SectionHeader, ThemedText, Workspace } from "@/components";
 
 const notes = [
   [

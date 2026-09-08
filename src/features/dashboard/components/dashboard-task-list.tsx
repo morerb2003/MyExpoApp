@@ -1,7 +1,6 @@
 import { Pressable, StyleSheet, View } from "react-native";
 
-import { ThemedText } from "@/components/themed-text";
-import { Panel } from "@/components/workspace";
+import { Panel, ThemedText } from "@/components";
 import { DashboardTask, TaskFilter, taskFilters } from "../types";
 
 type DashboardTaskListProps = {
