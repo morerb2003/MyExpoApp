@@ -1,15 +1,22 @@
-import { Pressable, StyleSheet, View } from "react-native";
-
 import { Panel, SectionHeader, ThemedText, Workspace } from "@/components";
-
-const settings = [
-  ["Profile", "Alex Rivera", "AR"],
-  ["Notifications", "Daily digest at 8:00 AM", "›"],
-  ["Appearance", "System preference", "›"],
-  ["Workspace", "Studio team", "›"],
-];
+import { useWorkspace } from "@/features/workspace";
+import { useState } from "react";
+import { Pressable, StyleSheet, TextInput, View } from "react-native";
 
 export default function SettingsScreen() {
+  const { settings, updateSettings } = useWorkspace();
+  const [editing, setEditing] = useState(false);
+  const [profileName, setProfileName] = useState(settings.profileName);
+  const initials = settings.profileName
+    .split(" ")
+    .map((part) => part[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+  function saveProfile() {
+    if (profileName.trim()) updateSettings({ profileName: profileName.trim() });
+    setEditing(false);
+  }
   return (
     <Workspace
       eyebrow="SETTINGS / WORK APP"
@@ -18,32 +25,87 @@ export default function SettingsScreen() {
     >
       <Panel style={styles.profile}>
         <View style={styles.profileAvatar}>
-          <ThemedText style={styles.profileInitials}>AR</ThemedText>
+          <ThemedText style={styles.profileInitials}>{initials}</ThemedText>
         </View>
         <View style={styles.profileCopy}>
-          <ThemedText style={styles.name}>Alex Rivera</ThemedText>
-          <ThemedText type="small" themeColor="textSecondary">
-            alex@studio.co
-          </ThemedText>
+          {editing ? (
+            <TextInput
+              value={profileName}
+              onChangeText={setProfileName}
+              onSubmitEditing={saveProfile}
+              style={styles.input}
+              autoFocus
+            />
+          ) : (
+            <>
+              <ThemedText style={styles.name}>
+                {settings.profileName}
+              </ThemedText>
+              <ThemedText type="small" themeColor="textSecondary">
+                {settings.email}
+              </ThemedText>
+            </>
+          )}
         </View>
-        <ThemedText type="smallBold" style={styles.edit}>
-          Edit
-        </ThemedText>
+        <Pressable onPress={() => (editing ? saveProfile() : setEditing(true))}>
+          <ThemedText type="smallBold" style={styles.edit}>
+            {editing ? "Save" : "Edit"}
+          </ThemedText>
+        </Pressable>
       </Panel>
       <View>
         <SectionHeader title="Preferences" />
         <Panel>
-          {settings.slice(1).map(([label, value, icon]) => (
-            <Pressable key={label} style={styles.row}>
-              <View style={styles.rowCopy}>
-                <ThemedText style={styles.name}>{label}</ThemedText>
-                <ThemedText type="small" themeColor="textSecondary">
-                  {value}
-                </ThemedText>
-              </View>
-              <ThemedText style={styles.chevron}>{icon}</ThemedText>
-            </Pressable>
-          ))}
+          <Pressable
+            onPress={() =>
+              updateSettings({ notifications: !settings.notifications })
+            }
+            style={styles.row}
+          >
+            <View style={styles.rowCopy}>
+              <ThemedText style={styles.name}>Notifications</ThemedText>
+              <ThemedText type="small" themeColor="textSecondary">
+                {settings.notifications ? "On · daily digest enabled" : "Off"}
+              </ThemedText>
+            </View>
+            <ThemedText style={styles.value}>
+              {settings.notifications ? "ON" : "OFF"}
+            </ThemedText>
+          </Pressable>
+          <Pressable
+            onPress={() =>
+              updateSettings({ dailyDigest: !settings.dailyDigest })
+            }
+            style={styles.row}
+          >
+            <View style={styles.rowCopy}>
+              <ThemedText style={styles.name}>Daily digest</ThemedText>
+              <ThemedText type="small" themeColor="textSecondary">
+                {settings.dailyDigest ? "Every morning" : "Disabled"}
+              </ThemedText>
+            </View>
+            <ThemedText style={styles.value}>
+              {settings.dailyDigest ? "ON" : "OFF"}
+            </ThemedText>
+          </Pressable>
+          <Pressable
+            onPress={() =>
+              updateSettings({
+                appearance: settings.appearance === "dark" ? "light" : "dark",
+              })
+            }
+            style={styles.row}
+          >
+            <View style={styles.rowCopy}>
+              <ThemedText style={styles.name}>Appearance</ThemedText>
+              <ThemedText type="small" themeColor="textSecondary">
+                {settings.appearance === "dark"
+                  ? "Dark preference"
+                  : "Light preference"}
+              </ThemedText>
+            </View>
+            <ThemedText style={styles.chevron}>›</ThemedText>
+          </Pressable>
         </Panel>
       </View>
       <View>
@@ -54,7 +116,7 @@ export default function SettingsScreen() {
             A quiet place for meaningful work.
           </ThemedText>
           <ThemedText type="small" style={styles.version}>
-            Version 1.0.0
+            Version 1.0.0 · Local workspace
           </ThemedText>
         </Panel>
       </View>
@@ -74,10 +136,19 @@ const styles = StyleSheet.create({
   },
   profileInitials: { fontSize: 20, fontWeight: "800" },
   profileCopy: { flex: 1, gap: 3 },
+  input: {
+    backgroundColor: "#F7F3ED",
+    borderRadius: 10,
+    color: "#272522",
+    fontSize: 16,
+    paddingHorizontal: 10,
+    paddingVertical: 7,
+  },
   edit: { color: "#D7614B" },
-  row: { flexDirection: "row", alignItems: "center", paddingVertical: 5 },
+  row: { flexDirection: "row", alignItems: "center", paddingVertical: 8 },
   rowCopy: { flex: 1, gap: 3 },
   name: { fontWeight: "800" },
+  value: { color: "#6FB48C", fontWeight: "800", fontSize: 12 },
   chevron: { fontSize: 24, color: "#756F67" },
   about: { gap: 8 },
   version: { marginTop: 8, color: "#D7614B" },

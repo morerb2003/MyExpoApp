@@ -1,10 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 
-import { initialDashboardTasks } from "../data";
+import { useWorkspace } from "@/features/workspace";
 import { DashboardTask, TaskFilter } from "../types";
 
 export function useDashboard() {
-  const [tasks, setTasks] = useState<DashboardTask[]>(initialDashboardTasks);
+  const {
+    tasks: workspaceTasks,
+    createTask,
+    toggleTaskStatus,
+  } = useWorkspace();
   const [filter, setFilter] = useState<TaskFilter>("All");
   const [seconds, setSeconds] = useState(25 * 60);
   const [timerRunning, setTimerRunning] = useState(false);
@@ -23,6 +27,28 @@ export function useDashboard() {
     return () => clearInterval(timer);
   }, [timerRunning]);
 
+  const tasks = useMemo<DashboardTask[]>(
+    () =>
+      workspaceTasks.map((task) => ({
+        id: task.id,
+        title: task.title,
+        meta: `${task.project} / ${task.priority} priority`,
+        label:
+          task.status === "done"
+            ? "DONE"
+            : task.dueDate === new Date().toISOString().slice(0, 10)
+              ? "TODAY"
+              : task.dueDate,
+        tone:
+          task.priority === "high"
+            ? "coral"
+            : task.priority === "medium"
+              ? "yellow"
+              : "mint",
+        done: task.status === "done",
+      })),
+    [workspaceTasks],
+  );
   const completedCount = tasks.filter((task) => task.done).length;
   const visibleTasks = useMemo(
     () =>
@@ -34,30 +60,21 @@ export function useDashboard() {
   );
   const formattedTime = `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`;
 
-  function toggleTask(id: number) {
-    setTasks((current) =>
-      current.map((task) =>
-        task.id === id
-          ? { ...task, done: !task.done, label: !task.done ? "DONE" : "TODAY" }
-          : task,
-      ),
-    );
+  function toggleTask(id: string) {
+    toggleTaskStatus(id);
   }
 
   function addTask(title: string) {
     const trimmedTitle = title.trim();
     if (!trimmedTitle) return false;
-    setTasks((current) => [
-      ...current,
-      {
-        id: Date.now(),
-        title: trimmedTitle,
-        meta: "Personal / added just now",
-        label: "NEW",
-        tone: "coral",
-        done: false,
-      },
-    ]);
+    createTask({
+      title: trimmedTitle,
+      description: "",
+      priority: "medium",
+      dueDate: new Date().toISOString().slice(0, 10),
+      status: "todo",
+      project: "Personal",
+    });
     setFilter("All");
     return true;
   }

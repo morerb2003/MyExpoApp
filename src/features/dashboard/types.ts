@@ -1,7 +1,7 @@
 export type TaskTone = "coral" | "blue" | "yellow" | "mint";
 
 export type DashboardTask = {
-  id: number;
+  id: string;
   title: string;
   meta: string;
   label: string;

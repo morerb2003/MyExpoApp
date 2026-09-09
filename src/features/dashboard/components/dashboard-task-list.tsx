@@ -7,7 +7,7 @@ type DashboardTaskListProps = {
   filter: TaskFilter;
   tasks: DashboardTask[];
   onFilterChange: (filter: TaskFilter) => void;
-  onToggleTask: (id: number) => void;
+  onToggleTask: (id: string) => void;
 };
 
 export function DashboardTaskList({
