@@ -13,7 +13,7 @@ const notes = [
   [
     "Launch notes",
     "A few thoughts after the customer call...",
-    "Today",
+    "Today",   
     "#F4B3A3",
   ],
   [
