@@ -13,7 +13,12 @@ Worko/
     ├── src/
     │   ├── config/
     │   │   ├── env.js           # Environment variable loader & defaults
-    │   │   └── db.js            # MongoDB connection & local JSON fallback
+    │   │   ├── db.js            # Persistent JSON fallback / MongoDB adapter
+    │   │   └── postgres.js      # PostgreSQL connection pool & query utility
+    │   ├── db/
+    │   │   ├── schema.sql       # 8 tables with user_id FKs, indexes & triggers
+    │   │   ├── seed.sql         # Default demo user & initial workspace seed data
+    │   │   └── migrate.js       # Database migration & table verification runner
     │   ├── controllers/
     │   │   ├── taskController.js       # Task business logic & HTTP responses
     │   │   ├── noteController.js       # Note CRUD & pin toggle controller
@@ -56,6 +61,48 @@ Worko/
     ├── package.json                 # Dependencies & npm scripts
     └── README.md                    # Backend documentation
 ```
+
+---
+
+## 🐘 PostgreSQL Database (`worko_db`)
+
+The Worko relational schema supports multi-user data isolation. Every user-owned record contains a `user_id` foreign key referencing `users(id)` with `ON DELETE CASCADE`.
+
+### Relational Schema Hierarchy
+```
+users
+  │
+  ├── user_settings   (1:1  user_id FK, UK)
+  ├── tasks           (1:N  user_id FK)
+  ├── calendar_events (1:N  user_id FK)
+  ├── notes           (1:N  user_id FK)
+  ├── team_members    (1:N  user_id FK)
+  ├── activities      (1:N  user_id FK)
+  └── focus_sessions  (1:N  user_id FK)
+```
+
+### Running Migrations
+
+1. Configure your PostgreSQL credentials in `backend/.env`:
+   ```env
+   PG_HOST=localhost
+   PG_PORT=5432
+   PG_DATABASE=worko_db
+   PG_USER=postgres
+   PG_PASSWORD=your_postgres_password
+   ```
+
+2. Run the migration to create all 8 tables, indexes, and triggers:
+   ```bash
+   npm run db:migrate
+   ```
+
+3. Optionally populate initial demo seeds:
+   ```bash
+   npm run db:seed
+   ```
+
+*(Alternatively, you can open `backend/src/db/schema.sql` in pgAdmin 4 Query Tool or run `psql -U postgres -d worko_db -f src/db/schema.sql`)*
 
 ---
 
