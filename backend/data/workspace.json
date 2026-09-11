@@ -1,0 +1,147 @@
+{
+  "version": 1,
+  "settings": {
+    "profileName": "Alex Rivera",
+    "email": "alex@studio.co",
+    "appearance": "system",
+    "notifications": true,
+    "language": "English",
+    "dailyDigest": true
+  },
+  "focusMinutes": 270,
+  "tasks": [
+    {
+      "id": "task-1",
+      "title": "Finalize Q3 launch plan",
+      "description": "Align milestones, owners, and risk plan before team review.",
+      "priority": "high",
+      "dueDate": "2026-09-11",
+      "status": "in-progress",
+      "project": "Product",
+      "createdAt": "2026-09-11T14:50:38.669Z",
+      "updatedAt": "2026-09-11T14:50:38.669Z"
+    },
+    {
+      "id": "task-2",
+      "title": "Send research synthesis",
+      "description": "Turn interview takeaways into a concise decision memo.",
+      "priority": "medium",
+      "dueDate": "2026-09-11",
+      "status": "todo",
+      "project": "Research",
+      "createdAt": "2026-09-11T14:50:38.669Z",
+      "updatedAt": "2026-09-11T14:50:38.669Z"
+    }
+  ],
+  "notes": [
+    {
+      "id": "note-1",
+      "title": "Launch notes",
+      "body": "The clearest value is the calm, focused workspace—not more process.",
+      "category": "Product",
+      "color": "#F4B3A3",
+      "pinned": true,
+      "createdAt": "2026-09-11T14:50:38.669Z",
+      "updatedAt": "2026-09-11T14:50:38.669Z"
+    }
+  ],
+  "events": [
+    {
+      "id": "event-1",
+      "title": "Deep work block",
+      "date": "2026-09-11",
+      "time": "09:00",
+      "duration": "2h",
+      "description": "Protect time for focused execution.",
+      "attendees": [],
+      "color": "#F4B3A3"
+    }
+  ],
+  "team": [
+    {
+      "id": "member-1",
+      "initials": "MS",
+      "name": "Maya Singh",
+      "role": "Product designer",
+      "status": "online",
+      "color": "#F4B3A3",
+      "project": "Workspace refresh",
+      "lastActive": "Active now"
+    },
+    {
+      "id": "member-2",
+      "initials": "JL",
+      "name": "Jordan Lee",
+      "role": "Engineering lead",
+      "status": "focus",
+      "color": "#BED8EA",
+      "project": "Launch platform",
+      "lastActive": "In focus mode"
+    }
+  ],
+  "activities": [
+    {
+      "id": "act-1789138525987-5y23",
+      "actor": "Alex",
+      "message": "captured note “Automated Test Note”",
+      "timestamp": "Just now",
+      "tone": "yellow"
+    },
+    {
+      "id": "act-1789138525985-2mys",
+      "actor": "Alex",
+      "message": "removed task “Updated Test Task”",
+      "timestamp": "Just now",
+      "tone": "neutral"
+    },
+    {
+      "id": "act-1789138525980-4dri",
+      "actor": "Alex",
+      "message": "completed “Updated Test Task”",
+      "timestamp": "Just now",
+      "tone": "mint"
+    },
+    {
+      "id": "act-1789138525974-rwuf",
+      "actor": "Alex",
+      "message": "created task “Automated Test Task”",
+      "timestamp": "Just now",
+      "tone": "coral"
+    },
+    {
+      "id": "act-1789138489564-1qtx",
+      "actor": "Alex",
+      "message": "captured note “Automated Test Note”",
+      "timestamp": "Just now",
+      "tone": "yellow"
+    },
+    {
+      "id": "act-1789138489562-vqft",
+      "actor": "Alex",
+      "message": "removed task “Updated Test Task”",
+      "timestamp": "Just now",
+      "tone": "neutral"
+    },
+    {
+      "id": "act-1789138489559-yfgs",
+      "actor": "Alex",
+      "message": "completed “Updated Test Task”",
+      "timestamp": "Just now",
+      "tone": "mint"
+    },
+    {
+      "id": "act-1789138489552-jrv4",
+      "actor": "Alex",
+      "message": "created task “Automated Test Task”",
+      "timestamp": "Just now",
+      "tone": "coral"
+    },
+    {
+      "id": "act-1",
+      "actor": "Alex",
+      "message": "initialized the workspace",
+      "timestamp": "Just now",
+      "tone": "mint"
+    }
+  ]
+}
