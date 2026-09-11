@@ -8,6 +8,10 @@ export function useDashboard() {
     tasks: workspaceTasks,
     createTask,
     toggleTaskStatus,
+    focusMinutes,
+    recordFocusMinutes,
+    settings,
+    activities,
   } = useWorkspace();
   const [filter, setFilter] = useState<TaskFilter>("All");
   const [seconds, setSeconds] = useState(25 * 60);
@@ -19,13 +23,14 @@ export function useDashboard() {
       setSeconds((current) => {
         if (current <= 1) {
           setTimerRunning(false);
+          recordFocusMinutes(25);
           return 25 * 60;
         }
         return current - 1;
       });
     }, 1000);
     return () => clearInterval(timer);
-  }, [timerRunning]);
+  }, [recordFocusMinutes, timerRunning]);
 
   const tasks = useMemo<DashboardTask[]>(
     () =>
@@ -59,6 +64,7 @@ export function useDashboard() {
     [filter, tasks],
   );
   const formattedTime = `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`;
+  const focusHours = ((focusMinutes ?? 270) / 60).toFixed(1);
 
   function toggleTask(id: string) {
     toggleTaskStatus(id);
@@ -90,5 +96,8 @@ export function useDashboard() {
     setTimerRunning,
     toggleTask,
     addTask,
+    focusHours,
+    settings,
+    activities,
   };
 }

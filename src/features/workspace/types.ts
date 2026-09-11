@@ -76,9 +76,11 @@ export type WorkspaceData = {
   team: TeamMember[];
   settings: WorkspaceSettings;
   activities: WorkspaceActivity[];
+  focusMinutes: number;
 };
 
 export type TaskInput = Omit<WorkspaceTask, "id" | "createdAt" | "updatedAt">;
 export type NoteInput = Omit<WorkspaceNote, "id" | "createdAt" | "updatedAt">;
 export type EventInput = Omit<WorkspaceEvent, "id">;
 export type TeamMemberInput = Omit<TeamMember, "id">;
+

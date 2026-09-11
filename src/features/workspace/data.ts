@@ -194,5 +194,6 @@ export function createInitialWorkspace(): WorkspaceData {
         tone: "mint",
       },
     ],
+    focusMinutes: 270,
   };
 }

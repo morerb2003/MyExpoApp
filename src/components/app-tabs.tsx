@@ -1,8 +1,10 @@
 import { Tabs } from "expo-router";
 import { SymbolView } from "expo-symbols";
-import { Platform, useColorScheme, useWindowDimensions } from "react-native";
+import { Platform, useWindowDimensions } from "react-native";
 
 import { Colors } from "@/constants/theme";
+import { useColorScheme } from "@/hooks/use-color-scheme";
+
 
 const icons = {
   index: { ios: "house.fill", android: "home", web: "home" },

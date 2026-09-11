@@ -1,7 +1,8 @@
-import { ReactNode } from "react";
+import { ReactNode, useMemo } from "react";
 import {
     Pressable,
     ScrollView,
+    StyleProp,
     StyleSheet,
     View,
     ViewStyle,
@@ -10,6 +11,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Colors, Spacing } from "@/constants/theme";
+import { useWorkspaceOptional } from "@/features/workspace";
 import { useColorScheme } from "@/hooks/use-color-scheme";
 import { ThemedText } from "./themed-text";
 import { ThemedView } from "./themed-view";
@@ -41,6 +43,27 @@ export function Workspace({
 }: WorkspaceProps) {
   const { width } = useWindowDimensions();
   const isCompact = width < 600;
+  const scheme = useColorScheme() === "dark" ? "dark" : "light";
+  const workspace = useWorkspaceOptional();
+  const profileName = workspace?.settings?.profileName || "Alex Rivera";
+
+  const todayFormatted = useMemo(() => {
+    return new Intl.DateTimeFormat("en-US", {
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+    }).format(new Date()).toUpperCase();
+  }, []);
+
+  const avatarInitials = useMemo(() => {
+    return profileName
+      .split(" ")
+      .map((part) => part[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase();
+  }, [profileName]);
+
   return (
     <ThemedView style={styles.screen}>
       <SafeAreaView style={styles.safeArea}>
@@ -49,16 +72,18 @@ export function Workspace({
           showsVerticalScrollIndicator={false}
         >
           <View style={[styles.topBar, isCompact && styles.topBarCompact]}>
-            <View style={styles.brandMark}>
-              <ThemedText style={styles.brandLetter}>W</ThemedText>
+            <View style={[styles.brandMark, { backgroundColor: Colors[scheme].text }]}>
+              <ThemedText style={[styles.brandLetter, { color: Colors[scheme].background }]}>
+                W
+              </ThemedText>
             </View>
             {!isCompact && (
               <ThemedText type="small" themeColor="textSecondary">
-                MONDAY, SEPTEMBER 8
+                {todayFormatted}
               </ThemedText>
             )}
-            <View style={styles.avatar}>
-              <ThemedText style={styles.avatarText}>AR</ThemedText>
+            <View style={[styles.avatar, { backgroundColor: scheme === "dark" ? "#48443D" : "#E8D7C5" }]}>
+              <ThemedText style={styles.avatarText}>{avatarInitials}</ThemedText>
             </View>
           </View>
           <View style={styles.heading}>
@@ -106,12 +131,20 @@ export function Panel({
   style,
 }: {
   children: ReactNode;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }) {
   const scheme = useColorScheme() === "dark" ? "dark" : "light";
   return (
     <View
-      style={[styles.panel, { backgroundColor: Colors[scheme].panel }, style]}
+      style={[
+        styles.panel,
+        {
+          backgroundColor: Colors[scheme].panel,
+          borderColor: Colors[scheme].border,
+          borderWidth: scheme === "dark" ? 1 : 0,
+        },
+        style,
+      ]}
     >
       {children}
     </View>

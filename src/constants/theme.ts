@@ -15,14 +15,18 @@ export const Colors = {
     backgroundSelected: "#E4DED3",
     textSecondary: "#756F67",
     panel: "#FFFDF8",
+    border: "#E7E1D8",
+    inputBg: "#F7F3ED",
   },
   dark: {
     text: "#F7F4EE",
-    background: "#242321",
-    backgroundElement: "#35332F",
-    backgroundSelected: "#48443D",
-    textSecondary: "#C4BDB3",
-    panel: "#302E2A",
+    background: "#1E1D1B",
+    backgroundElement: "#2D2A26",
+    backgroundSelected: "#423E38",
+    textSecondary: "#ABA398",
+    panel: "#2A2824",
+    border: "#3D3933",
+    inputBg: "#22201D",
   },
 } as const;
 

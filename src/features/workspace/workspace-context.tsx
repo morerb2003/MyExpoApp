@@ -42,6 +42,10 @@ type WorkspaceContextValue = WorkspaceData & {
   deleteEvent: (id: string) => void;
   updateSettings: (patch: Partial<WorkspaceSettings>) => void;
   addTeamMember: (input: TeamMemberInput) => void;
+  updateTeamMember: (id: string, patch: Partial<Omit<TeamMember, "id">>) => void;
+  deleteTeamMember: (id: string) => void;
+  recordFocusMinutes: (minutes: number) => void;
+  resetWorkspace: () => void;
 };
 
 const WorkspaceContext = createContext<WorkspaceContextValue | null>(null);
@@ -93,6 +97,7 @@ function parseSavedWorkspace(raw: string | null): WorkspaceData | null {
     return {
       ...candidate,
       version: 1,
+      focusMinutes: typeof candidate.focusMinutes === "number" ? candidate.focusMinutes : 270,
       settings: {
         ...createInitialWorkspace().settings,
         ...candidate.settings,
@@ -270,6 +275,49 @@ export function WorkspaceProvider({ children }: PropsWithChildren) {
     });
   }, []);
 
+  const updateTeamMember = useCallback(
+    (id: string, patch: Partial<Omit<TeamMember, "id">>) => {
+      setState((current) => ({
+        ...current,
+        team: current.team.map((member) =>
+          member.id === id ? { ...member, ...patch } : member,
+        ),
+      }));
+    },
+    [],
+  );
+
+  const deleteTeamMember = useCallback((id: string) => {
+    setState((current) => {
+      const removed = current.team.find((m) => m.id === id);
+      return {
+        ...current,
+        team: current.team.filter((m) => m.id !== id),
+        activities: removed
+          ? appendActivity(current, `removed teammate ${removed.name}`, "neutral")
+          : current.activities,
+      };
+    });
+  }, []);
+
+  const recordFocusMinutes = useCallback((minutes: number) => {
+    setState((current) => ({
+      ...current,
+      focusMinutes: (current.focusMinutes || 0) + minutes,
+      activities: appendActivity(
+        current,
+        `completed a ${minutes}m focus session`,
+        "yellow",
+      ),
+    }));
+  }, []);
+
+  const resetWorkspace = useCallback(() => {
+    const initial = createInitialWorkspace();
+    setState(initial);
+    AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(initial)).catch(() => undefined);
+  }, []);
+
   const value = useMemo<WorkspaceContextValue>(
     () => ({
       ...state,
@@ -288,6 +336,10 @@ export function WorkspaceProvider({ children }: PropsWithChildren) {
       deleteEvent,
       updateSettings,
       addTeamMember,
+      updateTeamMember,
+      deleteTeamMember,
+      recordFocusMinutes,
+      resetWorkspace,
     }),
     [
       addTeamMember,
@@ -297,7 +349,10 @@ export function WorkspaceProvider({ children }: PropsWithChildren) {
       deleteEvent,
       deleteNote,
       deleteTask,
+      deleteTeamMember,
       isHydrated,
+      recordFocusMinutes,
+      resetWorkspace,
       state,
       toggleNotePinned,
       toggleTaskStatus,
@@ -305,6 +360,7 @@ export function WorkspaceProvider({ children }: PropsWithChildren) {
       updateNote,
       updateSettings,
       updateTask,
+      updateTeamMember,
     ],
   );
 
