@@ -1,5 +1,12 @@
-import { useMemo, useState } from "react";
-import { Alert, Pressable, StyleSheet, TextInput, View } from "react-native";
+import { useEffect, useMemo, useState } from "react";
+import {
+    Alert,
+    BackHandler,
+    Pressable,
+    StyleSheet,
+    TextInput,
+    View,
+} from "react-native";
 
 import { Panel, SectionHeader, ThemedText, Workspace } from "@/components";
 import { Colors } from "@/constants/theme";
@@ -31,6 +38,15 @@ export default function CalendarScreen() {
   const [duration, setDuration] = useState("30m");
   const [description, setDescription] = useState("");
   const [color, setColor] = useState("#F4B3A3");
+
+  useEffect(() => {
+    if (!isAdding) return;
+    const sub = BackHandler.addEventListener("hardwareBackPress", () => {
+      setIsAdding(false);
+      return true;
+    });
+    return () => sub.remove();
+  }, [isAdding]);
 
   // Calculate 7-day week starting from current day + (weekOffset * 7)
   const week = useMemo(() => {

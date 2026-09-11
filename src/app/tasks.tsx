@@ -1,5 +1,12 @@
-import { useMemo, useState } from "react";
-import { Alert, Pressable, StyleSheet, TextInput, View } from "react-native";
+import { useEffect, useMemo, useState } from "react";
+import {
+    Alert,
+    BackHandler,
+    Pressable,
+    StyleSheet,
+    TextInput,
+    View,
+} from "react-native";
 
 import { Panel, SectionHeader, ThemedText, Workspace } from "@/components";
 import { Colors } from "@/constants/theme";
@@ -26,6 +33,15 @@ export default function TasksScreen() {
   const [priority, setPriority] = useState<"low" | "medium" | "high">("medium");
   const [dueDate, setDueDate] = useState(toDateKey(new Date()));
   const [editingId, setEditingId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!isAdding) return;
+    const sub = BackHandler.addEventListener("hardwareBackPress", () => {
+      setIsAdding(false);
+      return true;
+    });
+    return () => sub.remove();
+  }, [isAdding]);
 
   const visibleTasks = useMemo(
     () =>

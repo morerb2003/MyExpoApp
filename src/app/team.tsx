@@ -1,9 +1,17 @@
+import { useEffect, useMemo, useState } from "react";
+import {
+    Alert,
+    BackHandler,
+    Pressable,
+    StyleSheet,
+    TextInput,
+    View,
+} from "react-native";
+
 import { Panel, SectionHeader, ThemedText, Workspace } from "@/components";
 import { Colors } from "@/constants/theme";
 import { TeamMember, TeamStatus, useWorkspace } from "@/features/workspace";
 import { useColorScheme } from "@/hooks/use-color-scheme";
-import { useMemo, useState } from "react";
-import { Alert, Pressable, StyleSheet, TextInput, View } from "react-native";
 
 const statusCycle: Record<TeamStatus, TeamStatus> = {
   online: "focus",
@@ -25,6 +33,15 @@ export default function TeamScreen() {
   const [name, setName] = useState("");
   const [role, setRole] = useState("");
   const [project, setProject] = useState("");
+
+  useEffect(() => {
+    if (!isAdding) return;
+    const sub = BackHandler.addEventListener("hardwareBackPress", () => {
+      setIsAdding(false);
+      return true;
+    });
+    return () => sub.remove();
+  }, [isAdding]);
 
   const activeCount = useMemo(
     () => team.filter((m) => m.status === "online" || m.status === "focus").length,

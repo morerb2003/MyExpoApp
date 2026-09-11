@@ -1,6 +1,8 @@
 import { Pressable, StyleSheet, View } from "react-native";
 
 import { Panel, ThemedText } from "@/components";
+import { Colors } from "@/constants/theme";
+import { useColorScheme } from "@/hooks/use-color-scheme";
 import { DashboardTask, TaskFilter, taskFilters } from "../types";
 
 type DashboardTaskListProps = {
@@ -16,35 +18,62 @@ export function DashboardTaskList({
   onFilterChange,
   onToggleTask,
 }: DashboardTaskListProps) {
+  const scheme = useColorScheme() === "dark" ? "dark" : "light";
+
   return (
     <View>
       <View style={styles.filterRow}>
-        {taskFilters.map((item) => (
-          <Pressable
-            key={item}
-            onPress={() => onFilterChange(item)}
-            style={[styles.filter, filter === item && styles.filterActive]}
-          >
-            <ThemedText
-              type="smallBold"
-              themeColor={filter === item ? "text" : "textSecondary"}
+        {taskFilters.map((item) => {
+          const isActive = filter === item;
+          return (
+            <Pressable
+              key={item}
+              onPress={() => onFilterChange(item)}
+              style={[
+                styles.filter,
+                {
+                  backgroundColor: isActive
+                    ? "#F4B3A3"
+                    : Colors[scheme].backgroundElement,
+                },
+              ]}
             >
-              {item}
-            </ThemedText>
-          </Pressable>
-        ))}
+              <ThemedText
+                type="smallBold"
+                style={{
+                  color: isActive ? "#272522" : Colors[scheme].textSecondary,
+                }}
+              >
+                {item}
+              </ThemedText>
+            </Pressable>
+          );
+        })}
       </View>
       <Panel>
         {tasks.map((task, index) => (
           <View key={task.id}>
-            {index > 0 && <View style={styles.divider} />}
+            {index > 0 && (
+              <View
+                style={[
+                  styles.divider,
+                  { backgroundColor: Colors[scheme].border },
+                ]}
+              />
+            )}
             <Pressable
               accessibilityRole="checkbox"
               accessibilityState={{ checked: task.done }}
               onPress={() => onToggleTask(task.id)}
               style={styles.taskRow}
             >
-              <View style={[styles.checkbox, task.done && styles.checkboxDone]}>
+              <View
+                style={[
+                  styles.checkbox,
+                  { borderColor: Colors[scheme].border },
+                  task.done && styles.checkboxDone,
+                ]}
+              >
                 {task.done && <ThemedText style={styles.check}>✓</ThemedText>}
               </View>
               <View style={styles.taskCopy}>
@@ -77,7 +106,6 @@ export function DashboardTaskList({
 const styles = StyleSheet.create({
   filterRow: { flexDirection: "row", gap: 6, marginBottom: 12 },
   filter: { paddingHorizontal: 12, paddingVertical: 7, borderRadius: 20 },
-  filterActive: { backgroundColor: "#F4B3A3" },
   taskRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -89,7 +117,6 @@ const styles = StyleSheet.create({
     height: 22,
     borderRadius: 7,
     borderWidth: 1.5,
-    borderColor: "#C8BFB4",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -103,5 +130,5 @@ const styles = StyleSheet.create({
   blue: { backgroundColor: "#6C9CB8" },
   yellow: { backgroundColor: "#D5A92F" },
   mint: { backgroundColor: "#6FB48C" },
-  divider: { height: 1, backgroundColor: "#E7E1D8", marginVertical: 8 },
+  divider: { height: 1, marginVertical: 8 },
 });

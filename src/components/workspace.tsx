@@ -70,6 +70,8 @@ export function Workspace({
         <ScrollView
           contentContainerStyle={styles.content}
           showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="on-drag"
         >
           <View style={[styles.topBar, isCompact && styles.topBarCompact]}>
             <View style={[styles.brandMark, { backgroundColor: Colors[scheme].text }]}>
@@ -224,6 +226,6 @@ const styles = StyleSheet.create({
     padding: Spacing.three,
     gap: Spacing.two,
   },
-  statValue: { fontSize: 28, fontWeight: "800" },
-  statLabel: { fontSize: 13, fontWeight: "600" },
+  statValue: { fontSize: 28, fontWeight: "800", color: "#272522" },
+  statLabel: { fontSize: 13, fontWeight: "700", color: "#48433D" },
 });

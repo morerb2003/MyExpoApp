@@ -77,7 +77,7 @@ export default function HomeScreen() {
         onToggleAdding={() => setIsAdding((value) => !value)}
         onChangeTask={setNewTask}
         onAddTask={submitTask}
-        onToggleTimer={() => dashboard.setTimerRunning((value) => !value)}
+        onToggleTimer={dashboard.toggleTimer}
       />
 
       <View>

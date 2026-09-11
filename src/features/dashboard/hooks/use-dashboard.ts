@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import { useWorkspace } from "@/features/workspace";
 import { DashboardTask, TaskFilter } from "../types";
@@ -9,28 +9,14 @@ export function useDashboard() {
     createTask,
     toggleTaskStatus,
     focusMinutes,
-    recordFocusMinutes,
     settings,
     activities,
+    timerRunning,
+    formattedTimerTime,
+    toggleTimer,
+    resetTimer,
   } = useWorkspace();
   const [filter, setFilter] = useState<TaskFilter>("All");
-  const [seconds, setSeconds] = useState(25 * 60);
-  const [timerRunning, setTimerRunning] = useState(false);
-
-  useEffect(() => {
-    if (!timerRunning) return;
-    const timer = setInterval(() => {
-      setSeconds((current) => {
-        if (current <= 1) {
-          setTimerRunning(false);
-          recordFocusMinutes(25);
-          return 25 * 60;
-        }
-        return current - 1;
-      });
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [recordFocusMinutes, timerRunning]);
 
   const tasks = useMemo<DashboardTask[]>(
     () =>
@@ -63,7 +49,6 @@ export function useDashboard() {
       ),
     [filter, tasks],
   );
-  const formattedTime = `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`;
   const focusHours = ((focusMinutes ?? 270) / 60).toFixed(1);
 
   function toggleTask(id: string) {
@@ -91,9 +76,10 @@ export function useDashboard() {
     setFilter,
     completedCount,
     visibleTasks,
-    formattedTime,
+    formattedTime: formattedTimerTime,
     timerRunning,
-    setTimerRunning,
+    toggleTimer,
+    resetTimer,
     toggleTask,
     addTask,
     focusHours,

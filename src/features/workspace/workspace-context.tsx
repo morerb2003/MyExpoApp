@@ -46,6 +46,11 @@ type WorkspaceContextValue = WorkspaceData & {
   deleteTeamMember: (id: string) => void;
   recordFocusMinutes: (minutes: number) => void;
   resetWorkspace: () => void;
+  timerSeconds: number;
+  timerRunning: boolean;
+  formattedTimerTime: string;
+  toggleTimer: () => void;
+  resetTimer: () => void;
 };
 
 const WorkspaceContext = createContext<WorkspaceContextValue | null>(null);
@@ -318,6 +323,39 @@ export function WorkspaceProvider({ children }: PropsWithChildren) {
     AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(initial)).catch(() => undefined);
   }, []);
 
+  const [timerSeconds, setTimerSeconds] = useState(25 * 60);
+  const [timerRunning, setTimerRunning] = useState(false);
+
+  useEffect(() => {
+    if (!timerRunning) return;
+    const interval = setInterval(() => {
+      setTimerSeconds((prev) => {
+        if (prev <= 1) {
+          setTimerRunning(false);
+          recordFocusMinutes(25);
+          return 25 * 60;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [recordFocusMinutes, timerRunning]);
+
+  const toggleTimer = useCallback(() => {
+    setTimerRunning((curr) => !curr);
+  }, []);
+
+  const resetTimer = useCallback(() => {
+    setTimerRunning(false);
+    setTimerSeconds(25 * 60);
+  }, []);
+
+  const formattedTimerTime = useMemo(() => {
+    const m = Math.floor(timerSeconds / 60);
+    const s = timerSeconds % 60;
+    return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+  }, [timerSeconds]);
+
   const value = useMemo<WorkspaceContextValue>(
     () => ({
       ...state,
@@ -340,6 +378,11 @@ export function WorkspaceProvider({ children }: PropsWithChildren) {
       deleteTeamMember,
       recordFocusMinutes,
       resetWorkspace,
+      timerSeconds,
+      timerRunning,
+      formattedTimerTime,
+      toggleTimer,
+      resetTimer,
     }),
     [
       addTeamMember,
@@ -350,12 +393,17 @@ export function WorkspaceProvider({ children }: PropsWithChildren) {
       deleteNote,
       deleteTask,
       deleteTeamMember,
+      formattedTimerTime,
       isHydrated,
       recordFocusMinutes,
+      resetTimer,
       resetWorkspace,
       state,
+      timerRunning,
+      timerSeconds,
       toggleNotePinned,
       toggleTaskStatus,
+      toggleTimer,
       updateEvent,
       updateNote,
       updateSettings,

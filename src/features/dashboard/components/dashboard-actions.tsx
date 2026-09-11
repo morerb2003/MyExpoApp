@@ -1,6 +1,8 @@
 import { Pressable, StyleSheet, TextInput, View } from "react-native";
 
 import { Panel, ThemedText } from "@/components";
+import { Colors } from "@/constants/theme";
+import { useColorScheme } from "@/hooks/use-color-scheme";
 
 type DashboardActionsProps = {
   isAdding: boolean;
@@ -23,6 +25,8 @@ export function DashboardActions({
   onAddTask,
   onToggleTimer,
 }: DashboardActionsProps) {
+  const scheme = useColorScheme() === "dark" ? "dark" : "light";
+
   return (
     <>
       <View style={styles.actions}>
@@ -38,9 +42,20 @@ export function DashboardActions({
         <Pressable
           accessibilityRole="button"
           onPress={onToggleTimer}
-          style={styles.secondaryAction}
+          style={[
+            styles.secondaryAction,
+            {
+              backgroundColor:
+                scheme === "dark" ? Colors.dark.backgroundElement : "#E8D7C5",
+            },
+          ]}
         >
-          <ThemedText style={styles.secondaryText}>
+          <ThemedText
+            style={[
+              styles.secondaryText,
+              { color: scheme === "dark" ? Colors.dark.text : "#272522" },
+            ]}
+          >
             {timerRunning ? "Pause focus" : "Start focus"} · {formattedTime}
           </ThemedText>
         </Pressable>
@@ -53,16 +68,24 @@ export function DashboardActions({
             onChangeText={onChangeTask}
             onSubmitEditing={onAddTask}
             placeholder="What needs doing?"
-            placeholderTextColor="#756F67"
-            style={styles.input}
+            placeholderTextColor={Colors[scheme].textSecondary}
+            style={[styles.input, { color: Colors[scheme].text }]}
             returnKeyType="done"
+            autoCapitalize="sentences"
           />
           <Pressable
             accessibilityRole="button"
             onPress={onAddTask}
-            style={styles.addButton}
+            style={[
+              styles.addButton,
+              { backgroundColor: Colors[scheme].text },
+            ]}
           >
-            <ThemedText style={styles.addText}>Add</ThemedText>
+            <ThemedText
+              style={[styles.addText, { color: Colors[scheme].background }]}
+            >
+              Add
+            </ThemedText>
           </Pressable>
         </Panel>
       )}
@@ -80,12 +103,11 @@ const styles = StyleSheet.create({
   },
   primaryText: { color: "#FFFDF8", fontWeight: "800" },
   secondaryAction: {
-    backgroundColor: "#E8D7C5",
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderRadius: 12,
   },
-  secondaryText: { color: "#272522", fontWeight: "800" },
+  secondaryText: { fontWeight: "800" },
   addPanel: {
     flexDirection: "row",
     alignItems: "center",
@@ -94,16 +116,14 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    color: "#272522",
     fontSize: 16,
     paddingHorizontal: 8,
     paddingVertical: 8,
   },
   addButton: {
-    backgroundColor: "#272522",
     borderRadius: 10,
     paddingHorizontal: 16,
     paddingVertical: 10,
   },
-  addText: { color: "#FFFDF8", fontWeight: "800" },
+  addText: { fontWeight: "800" },
 });

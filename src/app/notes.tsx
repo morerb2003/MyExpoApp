@@ -1,6 +1,7 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
     Alert,
+    BackHandler,
     Pressable,
     StyleSheet,
     TextInput,
@@ -37,6 +38,15 @@ export default function NotesScreen() {
   const [body, setBody] = useState("");
   const [category, setCategory] = useState("Ideas");
   const [color, setColor] = useState("#F4D98B");
+
+  useEffect(() => {
+    if (!isAdding) return;
+    const sub = BackHandler.addEventListener("hardwareBackPress", () => {
+      setIsAdding(false);
+      return true;
+    });
+    return () => sub.remove();
+  }, [isAdding]);
 
   const { width } = useWindowDimensions();
   const columns = width < 520 ? 1 : width < 760 ? 2 : 3;

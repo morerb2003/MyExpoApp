@@ -2,8 +2,15 @@ import { Panel, SectionHeader, ThemedText, Workspace } from "@/components";
 import { Colors } from "@/constants/theme";
 import { AppearancePreference, useWorkspace } from "@/features/workspace";
 import { useColorScheme } from "@/hooks/use-color-scheme";
-import { useState } from "react";
-import { Alert, Pressable, StyleSheet, TextInput, View } from "react-native";
+import { useEffect, useState } from "react";
+import {
+    Alert,
+    BackHandler,
+    Pressable,
+    StyleSheet,
+    TextInput,
+    View,
+} from "react-native";
 
 const appearanceOrder: AppearancePreference[] = ["system", "light", "dark"];
 const appearanceLabels: Record<AppearancePreference, string> = {
@@ -18,6 +25,15 @@ export default function SettingsScreen() {
   const [editing, setEditing] = useState(false);
   const [profileName, setProfileName] = useState(settings.profileName);
   const [email, setEmail] = useState(settings.email);
+
+  useEffect(() => {
+    if (!editing) return;
+    const sub = BackHandler.addEventListener("hardwareBackPress", () => {
+      setEditing(false);
+      return true;
+    });
+    return () => sub.remove();
+  }, [editing]);
 
   const initials = settings.profileName
     .split(" ")
